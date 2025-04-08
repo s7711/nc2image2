@@ -1,6 +1,6 @@
 # nc2image.py
 
-I wrote this so I can see what gcode files designed for a 3-axis cnc machine look like. There are programs and websites that will show you the toolpath (in 3D), but it is hard to see the resulting surface shape. This program prepares an image (JPEG) where the greyscale represents the depth of the cut.
+I wrote this 2 view gcode files designed for a 3-axis cnc machine. There are programs and websites that will show you the toolpath (in 3D), but it is hard to see the resulting surface shape. This program prepares an image (JPEG) where the greyscale represents the depth of the cut.
 
 The output image looks like this:
 
