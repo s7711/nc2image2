@@ -28,5 +28,8 @@ You should get a file called "example.jpg", which you can view. Note:
 * **gcode_file** can be changed to match your input file, or just rename your input file.
 * **output_file** can be changed too, but you could rename the default file name instead. I use JPG output format and I've set the dpi correctly. If you load the file into, say, GIMP, and set GIMP to show the cursor position in mm, you can check the dimensions of your gcode.
 
-As always, don't trust this software. Check everything yourself. Good luck, enjoy.
+Here is the leaf image, turned into gcode using image2cnc.py (see https://github.com/s7711/image2cnc/tree/main), then returned to a JPEG using nc2image.py
 
+![Leaf from example4.nc](example4.jpg)
+
+As always, don't trust this software. Check everything yourself. Good luck, enjoy.
