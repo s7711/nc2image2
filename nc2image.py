@@ -257,8 +257,8 @@ px2mm = 10  # Pixels per millimeter
 tool_diameter_mm = 3.175  # Tool diameter in millimeters
 material_top_height = 0.0  # Top of the material (e.g., 0mm)
 step_mm = 0.2  # Tool movement step in millimeters
-gcode_file = "../coords2cnc/part.nc"
-output_file = "test.jpg"
+gcode_file = "example.nc"
+output_file = "example.jpg"
 
 # Generate the material simulation
 create_material(gcode_file, px2mm, tool_diameter_mm, material_top_height, step_mm, output_file)
