@@ -22,7 +22,11 @@ def generate_arc_points(x_start, y_start, x_end, y_end, x_center, y_center, cloc
 
     # Calculate start and end angles
     start_angle = np.arctan2(y_start - y_center, x_start - x_center)
-    end_angle = np.arctan2(y_end - y_center, x_end - x_center)
+    if x_end is None or y_end is None \
+    or (x_start == x_end and y_start == y_end):
+        end_angle = start_angle - (2 * np.pi if clockwise else -2 * np.pi)
+    else:
+        end_angle = np.arctan2(y_end - y_center, x_end - x_center)
 
     # Ensure the angles cover the correct rotation direction
     if clockwise and end_angle > start_angle:
@@ -45,8 +49,6 @@ def generate_arc_points(x_start, y_start, x_end, y_end, x_center, y_center, cloc
 
     return points
 
-import re
-
 def parse_gcode(file_name):
     """Parse G-code file and extract synchronized X, Y, Z coordinates, handling both spaced and compact formats."""
     x_coords, y_coords, z_coords = [], [], []
@@ -57,6 +59,10 @@ def parse_gcode(file_name):
 
     with open(file_name, 'r') as file:
         for line in file:
+            # Ignore comments
+            if line.startswith("("):
+                continue
+
             # Search for all matching commands and parameters
             matches = gcode_pattern.findall(line)
 
@@ -223,9 +229,16 @@ def create_material(gcode_file, px2mm, tool_diameter_mm, material_top_height, st
 
     # Draw the gridlines
     for x in range(0, material_grayscale.width, grid_spacing_px):
-        draw.line([(x, 0), (x, material_grayscale.height)], fill=(0, 0, 255, 128), width=1)  # Blue, semi-transparent
+        draw.line([(x, 0), (x, material_grayscale.height)], fill=(0, 0, 255, 128), width=5)  # Blue, semi-transparent
     for y in range(0, material_grayscale.height, grid_spacing_px):
-        draw.line([(0, y), (material_grayscale.width, y)], fill=(0, 0, 255, 128), width=1)  # Blue, semi-transparent
+        draw.line([(0, y), (material_grayscale.width, y)], fill=(0, 0, 255, 128), width=5)  # Blue, semi-transparent
+
+    grid_spacing_px = int(grid_spacing_mm/10 * px2mm)
+    for x in range(0, material_grayscale.width, grid_spacing_px):
+        draw.line([(x, 0), (x, material_grayscale.height)], fill=(0, 255, 0, 128), width=1)  # Blue, semi-transparent
+    for y in range(0, material_grayscale.height, grid_spacing_px):
+        draw.line([(0, y), (material_grayscale.width, y)], fill=(0, 255, 0, 128), width=1)  # Blue, semi-transparent
+
 
     # Combine the material and grid images
     combined_image = Image.alpha_composite(
@@ -241,11 +254,11 @@ def create_material(gcode_file, px2mm, tool_diameter_mm, material_top_height, st
 
 # Parameters
 px2mm = 10  # Pixels per millimeter
-tool_diameter_mm = 2.0  # Tool diameter in millimeters
+tool_diameter_mm = 3.175  # Tool diameter in millimeters
 material_top_height = 0.0  # Top of the material (e.g., 0mm)
 step_mm = 0.2  # Tool movement step in millimeters
-gcode_file = "example.nc"
-output_file = "example.jpg"
+gcode_file = "../coords2cnc/part.nc"
+output_file = "test.jpg"
 
 # Generate the material simulation
 create_material(gcode_file, px2mm, tool_diameter_mm, material_top_height, step_mm, output_file)
