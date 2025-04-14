@@ -227,18 +227,34 @@ def create_material(gcode_file, px2mm, tool_diameter_mm, material_top_height, st
     # Calculate grid spacing in pixels
     grid_spacing_px = int(grid_spacing_mm * px2mm)
 
+    # Adjust the starting points of the gridlines to align with (0,0) in G-code
+    x_offset_px = int((-x_min) * px2mm) % grid_spacing_px
+    y_offset_px = int((-y_min) * px2mm) % grid_spacing_px
+
     # Draw the gridlines
-    for x in range(0, material_grayscale.width, grid_spacing_px):
+    for x in range(x_offset_px, material_grayscale.width, grid_spacing_px):
         draw.line([(x, 0), (x, material_grayscale.height)], fill=(0, 0, 255, 128), width=5)  # Blue, semi-transparent
-    for y in range(0, material_grayscale.height, grid_spacing_px):
+    for y in range(y_offset_px, material_grayscale.height, grid_spacing_px):
         draw.line([(0, y), (material_grayscale.width, y)], fill=(0, 0, 255, 128), width=5)  # Blue, semi-transparent
 
-    grid_spacing_px = int(grid_spacing_mm/10 * px2mm)
-    for x in range(0, material_grayscale.width, grid_spacing_px):
-        draw.line([(x, 0), (x, material_grayscale.height)], fill=(0, 255, 0, 128), width=1)  # Blue, semi-transparent
-    for y in range(0, material_grayscale.height, grid_spacing_px):
-        draw.line([(0, y), (material_grayscale.width, y)], fill=(0, 255, 0, 128), width=1)  # Blue, semi-transparent
+    # Draw finer gridlines
+    grid_spacing_px = int(grid_spacing_mm / 10 * px2mm)
+    x_offset_px = int((-x_min) * px2mm) % grid_spacing_px
+    y_offset_px = int((-y_min) * px2mm) % grid_spacing_px
 
+    for x in range(x_offset_px, material_grayscale.width, grid_spacing_px):
+        draw.line([(x, 0), (x, material_grayscale.height)], fill=(0, 255, 0, 128), width=1)  # Green, semi-transparent
+    for y in range(y_offset_px, material_grayscale.height, grid_spacing_px):
+        draw.line([(0, y), (material_grayscale.width, y)], fill=(0, 255, 0, 128), width=1)  # Green, semi-transparent
+
+    # Draw red lines for x=0 and y=0
+    x_zero_px = int((-x_min) * px2mm)  # Pixel position for x=0
+    y_zero_px = material_grayscale.height - int((-y_min) * px2mm) - 1  # Pixel position for y=0
+
+    if 0 <= x_zero_px < material_grayscale.width:
+        draw.line([(x_zero_px, 0), (x_zero_px, material_grayscale.height)], fill=(255, 0, 0, 255), width=5)  # Red, solid
+    if 0 <= y_zero_px < material_grayscale.height:
+        draw.line([(0, y_zero_px), (material_grayscale.width, y_zero_px)], fill=(255, 0, 0, 255), width=5)  # Red, solid
 
     # Combine the material and grid images
     combined_image = Image.alpha_composite(
