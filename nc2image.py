@@ -168,8 +168,8 @@ def create_material(gcode_file, px2mm, tool_diameter_mm, material_top_height, st
     print(f"Parsed {len(x_coords)} G-code lines.")  # Number of G-code lines
 
     # Determine the workspace boundaries
-    x_min, x_max = min(x_coords), max(x_coords)
-    y_min, y_max = min(y_coords), max(y_coords)
+    x_min, x_max = min(x_coords) - 10, max(x_coords) + 10
+    y_min, y_max = min(y_coords) - 10, max(y_coords) + 10
     z_min, z_max = min(z_coords), max(z_coords)
 
     # Print ranges for debugging
